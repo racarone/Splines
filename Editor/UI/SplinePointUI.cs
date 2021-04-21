@@ -13,7 +13,7 @@ namespace Splines
             public static readonly GUIContent inTangent = EditorGUIUtility.TrTextContent("In Tangent", "The local in tangent of this point relative to the spline");
             public static readonly GUIContent outTangent = EditorGUIUtility.TrTextContent("Out Tangent", "The local out tangent of this point relative to the spline");
             public static readonly GUIContent tangentMode = EditorGUIUtility.TrTextContent("Tangent Mode", "The tangent mode used for this point.");
-            public static readonly GUIContent roll = EditorGUIUtility.TrTextContent("Roll",  "The roll of this point relative to the spline.");
+            public static readonly GUIContent rotation = EditorGUIUtility.TrTextContent("Rotation",  "The rotation of this point relative to the spline.");
             public static readonly GUIContent scale = EditorGUIUtility.TrTextContent("Scale", "The local scaling of this point relative to the spline.");
             public static readonly GUIContent headerIcon = new GUIContent(AssetPreview.GetMiniTypeThumbnail(typeof(Transform)));
         }
@@ -87,7 +87,8 @@ namespace Splines
             using (var scope = new EditorGUI.ChangeCheckScope())
             {
                 EditorGUI.showMixedValue = serializedSelectedPoints.Any(point => point.value.quaternionValue != activePoint.value.quaternionValue);
-                EditorGUILayout.PropertyField(activePoint.value, Styles.roll);
+                var euler = EditorGUILayout.Vector3Field(Styles.rotation, activePoint.value.quaternionValue.eulerAngles);
+                activePoint.value.quaternionValue = Quaternion.Euler(euler);
 
                 if (scope.changed)
                 {

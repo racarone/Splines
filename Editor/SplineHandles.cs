@@ -657,7 +657,7 @@ namespace Splines
             using (var scope = new EditorGUI.ChangeCheckScope())
             {
                 Handles.matrix = Matrix4x4.TRS(s_HandlePosition, s_HandleRotation, Vector3.one);
-                bool isLocalMode = Tools.pivotRotation == PivotRotation.Local;
+                bool isRollMode = false;
 
                 if (SplineSelection.indices.Length > 1)
                 {
@@ -665,9 +665,14 @@ namespace Splines
                 }
                 else
                 {
-                    if (isLocalMode)
+                    if (Tools.pivotRotation == PivotRotation.Local)
                     {
-                        s_CurrentRollRotation = DoCustomRollHandle(s_CurrentRollRotation, Vector3.zero);
+                        using (var rollScope = new EditorGUI.ChangeCheckScope())
+                        {
+                            s_CurrentRollRotation = DoCustomRollHandle(s_CurrentRollRotation, Vector3.zero);
+                            isRollMode = rollScope.changed;
+                        }
+                        
                         if (GUIUtility.hotControl != CustomRotationHandleIds.@default.roll)
                         {
                             s_CurrentRotation = DoCustomRotationHandle(s_CurrentRotation, Vector3.zero, 2);
@@ -690,11 +695,13 @@ namespace Splines
                     }
                     else
                     {
-                        s_SelectionGroup.ApplyTangentTransform(transform);
-                        
-                        if (isLocalMode)
+                        if (isRollMode)
                         {
                             s_SelectionGroup.ApplyRotation(s_CurrentRollRotation);
+                        }
+                        else
+                        {
+                            s_SelectionGroup.ApplyTangentTransform(transform);
                         }
                     }
 
