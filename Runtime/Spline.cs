@@ -123,7 +123,7 @@ namespace Splines
 
         public int pointCount => m_PositionCurve.count;
         
-        public int segmentCount => m_Closed ? m_PositionCurve.count : m_PositionCurve.count - 1;
+        public int segmentCount => m_Closed ? m_PositionCurve.count : Mathf.Max(m_PositionCurve.count - 1, 1);
 
         public float splineLength => m_LengthCacheCurve.count > 0 ? m_LengthCacheCurve.last.key : 0;
         
@@ -266,11 +266,24 @@ namespace Splines
         public Bounds ComputeBounds(Space space)
         {
             var bounds = new Bounds();
+
+            if (pointCount < 2)
+                return bounds;
             
             for (int i = 0; i < segmentCount; ++i)
             {
-                var segmentBounds = CurveMath.ComputeBounds(m_PositionCurve[i].value, m_PositionCurve[i].outTangent,
+                Bounds segmentBounds;
+                if (m_Closed && i == pointCount - 1)
+                {
+                    segmentBounds = CurveMath.ComputeBounds(m_PositionCurve[i].value, m_PositionCurve[i].outTangent,
+                                                            m_PositionCurve[0].inTangent, m_PositionCurve[0].value);
+                }
+                else
+                {
+                    segmentBounds = CurveMath.ComputeBounds(m_PositionCurve[i].value, m_PositionCurve[i].outTangent,
                                                             m_PositionCurve[i + 1].inTangent, m_PositionCurve[i + 1].value);
+                }
+                    
                 bounds.Encapsulate(segmentBounds);
             }
 
@@ -427,13 +440,12 @@ namespace Splines
                 UpdateSpline();
         }
 
-        public void SetRotationAtIndex(int index, Quaternion rotation, Space space, bool updateSpline = true)
+        public void SetQuaternionAtIndex(int index, Quaternion rotation, Space space, bool updateSpline = true)
         {
             if (index < 0 || index >= pointCount)
                 return;
 
-            var transformedRotation = space == Space.World ? transform.rotation * rotation : rotation;
-            m_RotationCurve[index].value = transformedRotation;
+            m_RotationCurve[index].value = space == Space.World ? transform.rotation * rotation : rotation;
             ++m_DeserializedVersion;
 
             if (updateSpline)
@@ -513,6 +525,12 @@ namespace Splines
         public Vector3 GetForwardAtIndex(int index, Space space)
         {
             return GetOutTangentAtIndex(index, space).normalized;
+        }
+
+        public Quaternion GetQuaternionAtIndex(int index, Space space)
+        {
+            var keyframe = GetRotationSafe(index);
+            return space == Space.World ? transform.rotation * keyframe.value : keyframe.value;
         }
 
         public Quaternion GetRotationAtIndex(int index, Space space)

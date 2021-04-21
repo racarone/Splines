@@ -44,7 +44,7 @@ namespace Splines
                     m_Position[indices[i]] = spline.GetPositionAtIndex(indices[i], Space.World);
                     m_Tangent[indices[i]] = spline.GetOutTangentAtIndex(indices[i], Space.Self);
                     m_Scale[indices[i]] = spline.GetScaleAtIndex(indices[i]);
-                    m_Rotation[indices[i]] = spline.GetRotationAtIndex(indices[i], Space.Self);
+                    m_Rotation[indices[i]] = spline.GetQuaternionAtIndex(indices[i], Space.Self);
                 }
             }
 
@@ -64,7 +64,7 @@ namespace Splines
             {
                 foreach (int selectedIndex in m_Indices)
                 {
-                    m_Spline.SetRotationAtIndex(selectedIndex, m_Rotation[selectedIndex] * deltaRotation, Space.Self);
+                    m_Spline.SetQuaternionAtIndex(selectedIndex, m_Rotation[selectedIndex] * deltaRotation, Space.Self);
                 }
             }
 
