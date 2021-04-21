@@ -1,0 +1,19 @@
+{
+    "name": "Splines.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:49818357e697641afb75d2f8acaf1861",
+        "GUID:924d5e0cf75287f48991cef23276c607"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

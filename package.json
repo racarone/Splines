@@ -1,0 +1,17 @@
+{
+  "author": "Robert Carone",
+  "dependencies": 
+  {
+    "com.unity.burst": "1.5.0",
+    "com.unity.mathematics": "1.1.0",
+    "com.unity.settings-manager": "1.0.3"
+  },
+  "description": "Spline library for Unity.",
+  "displayName": "Splines",
+  "keywords": [ "unity", "spline" ],
+  "license": "None",
+  "name": "com.rac.splines",
+  "unity": "2020.3",
+  "unityRelease": "0f1",
+  "version": "0.0.1"
+}
